@@ -736,6 +736,7 @@ interface GameData{
   notification:string;notifTimer:number
   // Stats
   battlesWon:number;printersCaught:number
+  box:Printer[]
 }
 
 function newGame():GameData{
@@ -752,7 +753,7 @@ function newGame():GameData{
     encounterCooldown:0,
     fadeAlpha:0,fadeTarget:0,fadeCallback:null,
     titleBlink:0,notification:'',notifTimer:0,
-    battlesWon:0,printersCaught:0,
+    battlesWon:0,printersCaught:0,box:[],
   }
 }
 
@@ -1045,7 +1046,7 @@ function updateMenu(dt:number){
     if(g.menuCursor===0){g.menuOpen=false;g.screen='party';g.partyCursor=0}
     else if(g.menuCursor===1){g.menuOpen=false;g.screen='inventory';g.shopCursor=0}
     else if(g.menuCursor===2){
-      try{localStorage.setItem('inkjob99_save',JSON.stringify({px:g.px,py:g.py,pdir:g.pdir,money:g.money,party:g.party,inventory:g.inventory,npcDefeated:g.npcDefeated,fedBossDefeated:g.fedBossDefeated,vaultCleared:g.vaultCleared,battlesWon:g.battlesWon,printersCaught:g.printersCaught}));notify('Game saved!')}catch{notify('Save failed!')}
+      try{localStorage.setItem('inkjob99_save',JSON.stringify({px:g.px,py:g.py,pdir:g.pdir,money:g.money,party:g.party,inventory:g.inventory,npcDefeated:g.npcDefeated,fedBossDefeated:g.fedBossDefeated,vaultCleared:g.vaultCleared,battlesWon:g.battlesWon,printersCaught:g.printersCaught,box:g.box}));notify('Game saved!')}catch{notify('Save failed!')}
     }else if(g.menuCursor===3){
       // New Game: clear save and restart fresh
       try{localStorage.removeItem('inkjob99_save')}catch{}
@@ -1240,6 +1241,7 @@ function updateBattle(dt:number){
             g.party.push(caught)
             b.textLines=[`Caught ${caught.nickname}!`,`Added to your party.`]
           }else{
+            g.box.push(caught)
             b.textLines=[`Caught ${caught.nickname}!`,`Party full - sent to storage.`]
           }
           sfx('win')
@@ -1958,7 +1960,7 @@ function init(){
       Object.assign(g,{px:d.px,py:d.py,pdir:d.pdir,money:d.money,
         party:d.party,inventory:d.inventory,npcDefeated:d.npcDefeated||{},
         fedBossDefeated:d.fedBossDefeated||false,vaultCleared:d.vaultCleared||false,
-        battlesWon:d.battlesWon||0,printersCaught:d.printersCaught||0})
+        battlesWon:d.battlesWon||0,printersCaught:d.printersCaught||0,box:d.box||[]})
       startBGM()
     }catch{g=newGame()}
   }else{g=newGame()}

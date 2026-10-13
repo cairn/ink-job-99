@@ -995,7 +995,8 @@ function newGame() {
     notification: "",
     notifTimer: 0,
     battlesWon: 0,
-    printersCaught: 0
+    printersCaught: 0,
+    box: []
   };
 }
 function getTile(x, y) {
@@ -1296,7 +1297,7 @@ function updateMenu(dt) {
       g.shopCursor = 0;
     } else if (g.menuCursor === 2) {
       try {
-        localStorage.setItem("inkjob99_save", JSON.stringify({ px: g.px, py: g.py, pdir: g.pdir, money: g.money, party: g.party, inventory: g.inventory, npcDefeated: g.npcDefeated, fedBossDefeated: g.fedBossDefeated, vaultCleared: g.vaultCleared, battlesWon: g.battlesWon, printersCaught: g.printersCaught }));
+        localStorage.setItem("inkjob99_save", JSON.stringify({ px: g.px, py: g.py, pdir: g.pdir, money: g.money, party: g.party, inventory: g.inventory, npcDefeated: g.npcDefeated, fedBossDefeated: g.fedBossDefeated, vaultCleared: g.vaultCleared, battlesWon: g.battlesWon, printersCaught: g.printersCaught, box: g.box }));
         notify("Game saved!");
       } catch {
         notify("Save failed!");
@@ -1578,6 +1579,7 @@ function updateBattle(dt) {
             g.party.push(caught);
             b.textLines = [`Caught ${caught.nickname}!`, `Added to your party.`];
           } else {
+            g.box.push(caught);
             b.textLines = [`Caught ${caught.nickname}!`, `Party full - sent to storage.`];
           }
           sfx("win");
@@ -2459,7 +2461,8 @@ function init() {
         fedBossDefeated: d.fedBossDefeated || false,
         vaultCleared: d.vaultCleared || false,
         battlesWon: d.battlesWon || 0,
-        printersCaught: d.printersCaught || 0
+        printersCaught: d.printersCaught || 0,
+        box: d.box || []
       });
       startBGM();
     } catch {
